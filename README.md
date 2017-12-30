@@ -36,7 +36,7 @@ pull(
 * ````forbidExtraRequests```` ````<Boolean>```` (Defaults to ````false````)
 * ````enforceStreamTermination```` ````<Boolean>```` (Defaults to ````false````)
 
-Invariant 5 is activated by setting ````forbidExtraRequests```` to ```true````. Invariant 6 is activated by setting ````enforceStreamTermination```` to ````true````.
+Invariant 5 is activated by setting ````forbidExtraRequests```` to ````true````. Invariant 6 is activated by setting ````enforceStreamTermination```` to ````true````.
 
 # Other modules with similar goals
 

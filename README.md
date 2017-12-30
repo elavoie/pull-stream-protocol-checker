@@ -10,6 +10,7 @@ Raise an exception if one of the following invariants is violated:
 4. The callbacks are invoked in the order in which they were created
 
 Optionally can check:
+
 5. That no other request are made after the stream has terminated or was aborted
 6. The stream is eventually terminated
 

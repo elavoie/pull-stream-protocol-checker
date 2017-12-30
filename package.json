@@ -1,0 +1,24 @@
+{
+  "name": "pull-stream-protocol-checker",
+  "version": "1.0.0",
+  "description": "Pull-stream module for detecting protocol violations at the interface of two modules.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "DEBUG=* tape test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elavoie/pull-stream-protocol-checker.git"
+  },
+  "author": "Erick Lavoie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elavoie/pull-stream-protocol-checker/issues"
+  },
+  "homepage": "https://github.com/elavoie/pull-stream-protocol-checker#readme",
+  "devDependencies": {
+    "pull-stream": "^3.6.1",
+    "pull-stream-reference-modules": "^1.0.0",
+    "tape": "^4.8.0"
+  }
+}

@@ -50,7 +50,7 @@ module.exports = function (forbidExtraRequests, enforceStreamTermination) {
 
   input.terminate = function () {
     if (j > latest + 1) {
-      throw new Error('Invariant 2 violated: callback ' + latest + ' was never invoked')
+      throw new Error('Invariant 2 violated: callback ' + (latest + 1) + ' was never invoked')
     }
 
     if (enforceStreamTermination && !done && !aborted) {

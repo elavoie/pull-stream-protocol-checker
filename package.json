@@ -1,6 +1,6 @@
 {
   "name": "pull-stream-protocol-checker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pull-stream module for detecting protocol violations at the interface of two modules.",
   "main": "src/index.js",
   "scripts": {
@@ -18,7 +18,6 @@
   "homepage": "https://github.com/elavoie/pull-stream-protocol-checker#readme",
   "devDependencies": {
     "pull-stream": "^3.6.1",
-    "pull-stream-reference-modules": "^1.0.0",
     "tape": "^4.8.0"
   }
 }

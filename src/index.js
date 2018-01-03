@@ -28,6 +28,7 @@ module.exports = function (forbidExtraRequests, enforceStreamTermination, notify
   var done = false
   var j = 1
   var latest = 0
+  var skipped = {}
 
   function input (requests) {
     return function output (_abort, x) {
@@ -42,6 +43,7 @@ module.exports = function (forbidExtraRequests, enforceStreamTermination, notify
 
       var i = j++
       if (!x) {
+        skipped[i] = true
         requests(aborted)
       } else {
         var xi = 0
@@ -61,7 +63,11 @@ module.exports = function (forbidExtraRequests, enforceStreamTermination, notify
 
   input.terminate = function () {
     if (j > latest + 1) {
-      notify('Invariant 2 violated: callback ' + (latest + 1) + ' was never invoked')
+      for (var k = latest + 1; k < j; k++) {
+        if (!skipped[k]) {
+          notify('Invariant 2 violated: callback ' + k + ' was never invoked')
+        }
+      }
     }
 
     if (enforceStreamTermination && !done && !aborted) {

@@ -1,4 +1,4 @@
-function checkArgs (forbidExtraRequests, enforceStreamTermination) {
+function checkArgs (forbidExtraRequests, enforceStreamTermination, notifyEagerly) {
   if (typeof forbidExtraRequests !== 'boolean') {
     throw new Error("Invalid argument 'forbidExtraRequests': should be a boolean value")
   }
@@ -6,13 +6,24 @@ function checkArgs (forbidExtraRequests, enforceStreamTermination) {
   if (typeof enforceStreamTermination !== 'boolean') {
     throw new Error("Invalid argument 'enforceStreamTermination': should be a boolean value")
   }
+
+  if (typeof notifyEagerly !== 'boolean') {
+    throw new Error("Invalid argument 'notifyEagerly': should be a boolean value")
+  }
 }
 
-module.exports = function (forbidExtraRequests, enforceStreamTermination) {
+module.exports = function (forbidExtraRequests, enforceStreamTermination, notifyEagerly) {
   if (arguments.length < 1) forbidExtraRequests = false
   if (arguments.length < 2) enforceStreamTermination = false
-  checkArgs(forbidExtraRequests, enforceStreamTermination)
+  if (arguments.length < 3) notifyEagerly = true
+  checkArgs(forbidExtraRequests, enforceStreamTermination, notifyEagerly)
 
+  function notify (message) {
+    if (notifyEagerly) throw new Error(message)
+    else errors.push(new Error(message))
+  }
+
+  var errors = []
   var aborted = false
   var done = false
   var j = 1
@@ -21,10 +32,10 @@ module.exports = function (forbidExtraRequests, enforceStreamTermination) {
   function input (requests) {
     return function output (_abort, x) {
       if (aborted || done) {
-        if (_abort === false) throw new Error('Invariant 1 violated: value requested after termination')
+        if (_abort === false) notify('Invariant 1 violated: value requested after termination')
         if (forbidExtraRequests) {
-          if (aborted) throw new Error('Invariant 5 violated: request made after the stream was aborted')
-          if (done) throw new Error('Invariant 5 violated: request made after the stream has terminated')
+          if (aborted) notify('Invariant 5 violated: request made after the stream was aborted')
+          if (done) notify('Invariant 5 violated: request made after the stream has terminated')
         }
       }
       aborted = aborted || _abort
@@ -36,9 +47,9 @@ module.exports = function (forbidExtraRequests, enforceStreamTermination) {
         var xi = 0
         requests(_abort, function (_done, v) {
           xi++
-          if (xi > 1) throw new Error('Invariant 3 violated: callback ' + i + ' invoked ' + xi + ' times')
-          if (i < latest) throw new Error('Invariant 4 violated: callback ' + i + ' invoked after callback ' + latest)
-          else if (i > latest + 1) throw new Error('Invariant 4 violated: callback ' + i + ' invoked before callback ' + (latest + 1))
+          if (xi > 1) notify('Invariant 3 violated: callback ' + i + ' invoked ' + xi + ' times')
+          if (i < latest) notify('Invariant 4 violated: callback ' + i + ' invoked after callback ' + latest)
+          else if (i > latest + 1) notify('Invariant 4 violated: callback ' + i + ' invoked before callback ' + (latest + 1))
           else latest = i
 
           done = done || _done
@@ -50,12 +61,14 @@ module.exports = function (forbidExtraRequests, enforceStreamTermination) {
 
   input.terminate = function () {
     if (j > latest + 1) {
-      throw new Error('Invariant 2 violated: callback ' + (latest + 1) + ' was never invoked')
+      notify('Invariant 2 violated: callback ' + (latest + 1) + ' was never invoked')
     }
 
     if (enforceStreamTermination && !done && !aborted) {
-      throw new Error('Invariant 6 violated: stream was never terminated')
+      notify('Invariant 6 violated: stream was never terminated')
     }
+
+    return errors
   }
 
   return input

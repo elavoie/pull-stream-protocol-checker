@@ -144,3 +144,25 @@ tape('Invariant 6', function (t) {
   }
   t.end()
 })
+
+tape('Notify during termination', function (t) {
+  var probe = checker(true, true, false)
+
+  var source = pull(
+    function (abort, _cb) { _cb(false, 1) },
+    probe
+  )
+
+  var errors = []
+  source(false, function () {})
+  source(false, function () {})
+  errors = probe.terminate()
+  if (errors.length < 1) {
+    t.fail('Invariant 6 violation not detected')
+  } else if (errors.length !== 1) {
+    t.fail('Too many errors')
+  } else {
+    t.equal(errors[0].message, 'Invariant 6 violated: stream was never terminated')
+  }
+  t.end()
+})

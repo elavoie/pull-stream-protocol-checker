@@ -31,12 +31,13 @@ pull(
 )
 ````
 
-# checker([forbidExtraRequests][, enforceStreamTermination])
+# probe = checker([forbidExtraRequests][, enforceStreamTermination][, notifyEagerly])
 
-* ````forbidExtraRequests```` ````<Boolean>```` (Defaults to ````false````)
+* ````forbidExtraRequests````      ````<Boolean>```` (Defaults to ````false````)
 * ````enforceStreamTermination```` ````<Boolean>```` (Defaults to ````false````)
+* ````notifyEagerly````            ````<Boolean>```` (Defaults to ````true````)
 
-Invariant 5 is activated by setting ````forbidExtraRequests```` to ````true````. Invariant 6 is activated by setting ````enforceStreamTermination```` to ````true````.
+Invariant 5 is activated by setting ````forbidExtraRequests```` to ````true````. Invariant 6 is activated by setting ````enforceStreamTermination```` to ````true````. If ````notifyEagerly===true````, an invariant violation is reported as an error that is thrown immediately; otherwise all violations are remembered and returned as an error array when invoking ````errors = probe.terminate()````.
 
 # Other modules with similar goals
 

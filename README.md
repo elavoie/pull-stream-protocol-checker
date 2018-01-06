@@ -2,17 +2,18 @@
 
 Pull-stream module for detecting protocol violations at the interface of two modules.
 
-Raise an exception if one of the following invariants is violated:
+Report an error if one of the following invariants is violated:
 
-1. No value request (````ask````) after termination
+1. No ask request (````read(false, ...)````) after termination
 2. Every callback is eventually invoked
 3. Every callback is invoked only once
 4. The callbacks are invoked in the order in which they were created
+5. No value answer (````cb(false, data)````) after termination
 
 Optionally can check:
 
-5. That no other request are made after the stream has terminated or was aborted
-6. The stream is eventually terminated
+6. That no other request are made after the stream has terminated or was aborted
+7. The stream is eventually terminated
 
 # Usage
 

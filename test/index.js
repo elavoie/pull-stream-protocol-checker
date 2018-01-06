@@ -93,6 +93,27 @@ tape('Invariant 4', function (t) {
 })
 
 tape('Invariant 5', function (t) {
+  var probe = checker()
+
+  var cb
+  var source = pull(
+    function (abort, _cb) { cb = _cb },
+    probe
+  )
+
+  try {
+    source(false, function () {})
+    cb(true)
+    source(true, function () {})
+    cb(false, 1)
+    t.fail('Invariant 5 violation not detected')
+  } catch (e) {
+    t.equal(e.message, 'Invariant 5 violated: callback 2 returned a value after termination')
+  }
+  t.end()
+})
+
+tape('Invariant 6', function (t) {
   var probe = checker(true)
   var source = pull(
     pull.count(0),
@@ -104,7 +125,7 @@ tape('Invariant 5', function (t) {
     source(true)
     t.fail('Invariant 5 violation not detected')
   } catch (e) {
-    t.equal(e.message, 'Invariant 5 violated: request made after the stream was aborted')
+    t.equal(e.message, 'Invariant 6 violated: request made after the stream was aborted')
   }
 
   probe = checker(true)
@@ -118,15 +139,15 @@ tape('Invariant 5', function (t) {
     source(false, function () {})
     source(false, function () {})
     source(true)
-    t.fail('Invariant 5 violation not detected')
+    t.fail('Invariant 6 violation not detected')
   } catch (e) {
-    t.equal(e.message, 'Invariant 5 violated: request made after the stream has terminated')
+    t.equal(e.message, 'Invariant 6 violated: request made after the stream has terminated')
   }
 
   t.end()
 })
 
-tape('Invariant 6', function (t) {
+tape('Invariant 7', function (t) {
   var probe = checker(true, true)
 
   var source = pull(
@@ -138,9 +159,9 @@ tape('Invariant 6', function (t) {
     source(false, function () {})
     source(false, function () {})
     probe.terminate()
-    t.fail('Invariant 6 violation not detected')
+    t.fail('Invariant 7 violation not detected')
   } catch (e) {
-    t.equal(e.message, 'Invariant 6 violated: stream was never terminated')
+    t.equal(e.message, 'Invariant 7 violated: stream was never terminated')
   }
   t.end()
 })
@@ -158,11 +179,11 @@ tape('Notify during termination', function (t) {
   source(false, function () {})
   errors = probe.terminate()
   if (errors.length < 1) {
-    t.fail('Invariant 6 violation not detected')
+    t.fail('Invariant 7 violation not detected')
   } else if (errors.length !== 1) {
     t.fail('Too many errors')
   } else {
-    t.equal(errors[0].message, 'Invariant 6 violated: stream was never terminated')
+    t.equal(errors[0].message, 'Invariant 7 violated: stream was never terminated')
   }
   t.end()
 })
